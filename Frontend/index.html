@@ -72,7 +72,7 @@
 
         addMessage(text, "user");
 
-        const response = await fetch("http://127.0.0.1:8000/transcript", {
+        const response = await fetch("https://conversation-analytics-api.onrender.com/transcript", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -116,3 +116,4 @@ Escalation Risk: ${a.escalation_risk}`;
     </script>
   </body>
 </html>
+
