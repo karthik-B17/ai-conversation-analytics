@@ -1,0 +1,118 @@
+<!doctype html>
+
+<html>
+  <head>
+    <title>AI Conversation Analytics</title>
+
+    <style>
+      body {
+        font-family: Arial;
+        background: #0f172a;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      #chat {
+        width: 650px;
+        height: 500px;
+        background: #111827;
+        overflow: auto;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 20px;
+      }
+
+      .message {
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 8px;
+      }
+
+      .user {
+        background: #2563eb;
+        text-align: right;
+      }
+
+      .bot {
+        background: #374151;
+      }
+
+      input {
+        width: 500px;
+        padding: 10px;
+        border-radius: 6px;
+        border: none;
+      }
+
+      button {
+        padding: 10px 20px;
+        border: none;
+        background: #10b981;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h2>Real-Time Conversation Analytics</h2>
+
+    <div id="chat"></div>
+
+    <div>
+      <input id="msg" placeholder="Type conversation transcript..." />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+      async function sendMessage() {
+        const text = document.getElementById("msg").value;
+
+        addMessage(text, "user");
+
+        const response = await fetch("http://127.0.0.1:8000/transcript", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            conversation_id: "chat_1",
+            text: text,
+          }),
+        });
+
+        const data = await response.json();
+
+        const a = data.analytics;
+
+        const reply = `Intent: ${a.intent}
+
+Topic: ${a.topic}
+
+Sentiment: ${a.sentiment}
+
+Escalation Risk: ${a.escalation_risk}`;
+
+        addMessage(reply, "bot");
+
+        document.getElementById("msg").value = "";
+      }
+
+      function addMessage(text, type) {
+        const chat = document.getElementById("chat");
+
+        const div = document.createElement("div");
+
+        div.className = "message " + type;
+
+        div.innerText = text;
+
+        chat.appendChild(div);
+
+        chat.scrollTop = chat.scrollHeight;
+      }
+    </script>
+  </body>
+</html>
