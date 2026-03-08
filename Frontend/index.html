@@ -1615,7 +1615,6 @@
       function renderTabs() {
         const bar = document.getElementById("tab-bar");
         bar.innerHTML = "";
-        // Show tabs in chronological order (oldest first in bar)
         [...store.order].reverse().forEach((id) => {
           const s = store.sessions[id];
           if (!s) return;
@@ -1783,10 +1782,12 @@
       }
 
       /* ════════════════════════════════
-   BACKEND
+   BACKEND  ← Updated to Render API
 ════════════════════════════════ */
+      const API_BASE = "https://conversation-analytics-api.onrender.com";
+
       async function analyzeWithBackend(text) {
-        const res = await fetch("http://127.0.0.1:8000/transcript", {
+        const res = await fetch(`${API_BASE}/transcript`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ conversation_id: activeSessionId, text }),
