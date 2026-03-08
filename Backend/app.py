@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 import requests
-
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -31,17 +30,38 @@ def home():
 @app.post("/transcript")
 async def receive_transcript(data: Transcript):
 
+    # --- Backend Input Validation ---
+    if not data.text.strip():
+        return {
+            "message": "Invalid service input, please enter a valid input",
+            "analytics": None
+        }
+
     payload = {
         "conversation_id": data.conversation_id,
         "text": data.text
     }
 
     try:
+        # Send transcript to n8n webhook
         response = requests.post(N8N_WEBHOOK, json=payload)
         result = response.json()
-    except Exception as e:
-        result = {"error": str(e)}
 
+        # Validate n8n response
+        if not result or "error" in result:
+            return {
+                "message": "Invalid service input, please enter a valid input",
+                "analytics": None
+            }
+
+    except Exception as e:
+        # Handle request errors
+        return {
+            "message": "Invalid service input, please enter a valid input",
+            "analytics": {"error": str(e)}
+        }
+
+    # --- Successful Response ---
     return {
         "message": "Transcript received",
         "analytics": result
