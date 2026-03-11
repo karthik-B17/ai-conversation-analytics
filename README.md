@@ -1,6 +1,6 @@
 # 🎙️ Real-Time Conversation Analytics
 
-### Hackathon Project – Novara 2026
+### Hackathon Project – Novara 2026 [Live Demo](https://aiconversationalanalytics.netlify.app/)
 
 ## 📌 Overview
 
